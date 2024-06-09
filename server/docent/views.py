@@ -2,7 +2,7 @@ import base64
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, JSONParser
+from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
 from .models import UserSession
 from langchain_openai import ChatOpenAI
 from langchain.schema.messages import AIMessage, HumanMessage
@@ -28,10 +28,15 @@ The Moonlight Sonata is a work that clearly demonstrates Beethoven's creativity 
 
 def encode_image(upload_file):
     try:
-        image_bytes = upload_file.read()
-        base64_image = base64.b64encode(image_bytes).decode("utf-8")
-        return base64_image
+        if upload_file.content_type.startswith('image/'):
+            image_bytes = upload_file.read()
+            base64_image = base64.b64encode(image_bytes).decode("utf-8")
+            return base64_image
+        else:
+            print("Uploaded file is not an image.")
+            return None
     except Exception as e:
+        print(f"Image encoding failed: {e}")
         return None
 
 def get_response(b64image, qsn):
@@ -48,10 +53,9 @@ def get_response(b64image, qsn):
         ]
     )
     return msg.content
-
 class ChattingView(APIView):
 
-    parser_classes = [MultiPartParser, JSONParser]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     def post(self, request):
         session_key = request.session.session_key or request.META.get('HTTP_SESSION_ID')
@@ -60,7 +64,7 @@ class ChattingView(APIView):
             session_key = request.session.session_key
 
         user_session, created = UserSession.objects.get_or_create(session_key=session_key)
-        upload_image = request.data.get('image')
+        upload_image = request.FILES.get('image')
         qsn = request.data.get('question')
 
         if upload_image:
