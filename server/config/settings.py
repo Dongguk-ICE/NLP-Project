@@ -42,6 +42,15 @@ INSTALLED_APPS = [
     "docent",
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
+    )
+}
+
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # CORS 관련 추가
     "django.middleware.security.SecurityMiddleware",
