@@ -1,10 +1,15 @@
 import { useState, useRef } from "react";
 // import { chatText } from "./apis/chatText";
 import { chatImage } from "./apis/chatImage";
+import { chatText } from "./apis/chatText";
 import "./App.css";
 
+window.speechSynthesis;
+
 export const App = () => {
-  // const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState("");
+  const utter = new SpeechSynthesisUtterance("안녕하세요!");
+  utter.rate = 1.3;
   const [reqImg, setReqImg] = useState(null);
   const inputRef = useRef();
 
@@ -12,13 +17,22 @@ export const App = () => {
     if (reqImg) {
       const formData = new FormData();
       formData.append("file", reqImg);
-      await chatImage(formData);
+      console.log(await chatImage(formData));
     }
   };
 
+  const handleTextSumbit = async () => {
+    const response = await chatText(question);
+    console.log(response);
+  };
+
   const handleChange = (e) => {
-    // setQuestion(e.target.value);
+    setQuestion(e.target.value);
     console.log(e);
+  };
+
+  const handleMusic = () => {
+    window.speechSynthesis.speak(utter);
   };
 
   const onUploadImage = (e) => {
@@ -42,6 +56,8 @@ export const App = () => {
         ref={inputRef}
         onChange={onUploadImage}
       />
+      <button onClick={handleMusic}>Hear the Analysis</button>
+      <button onClick={handleTextSumbit}>텍스트 테스</button>
     </div>
   );
 };
