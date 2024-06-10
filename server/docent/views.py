@@ -52,8 +52,8 @@ def get_response(b64image, qsn):
         ]
     )
     return msg.content
-class ChattingView(APIView):
 
+class ChattingView(APIView):
     parser_classes = [MultiPartParser, JSONParser, FormParser]
 
     def post(self, request):
@@ -64,9 +64,6 @@ class ChattingView(APIView):
 
         user_session, created = UserSession.objects.get_or_create(session_key=session_key)
         upload_image = request.FILES.get('file')
-        qsn = request.data.get('question')
-        
-        print(request.FILES)
 
         if upload_image:
             # 처음 이미지를 업로드하는 경우 -> 기본 응답 반환
@@ -76,14 +73,29 @@ class ChattingView(APIView):
                 user_session.save()
                 response = get_response(user_session.image_data, "")
                 return Response({"response": response}, status=status.HTTP_200_OK)
-
             else:
                 return Response({"error": "Image encoding failed."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not upload_image and not user_session.image_data:
+        return Response({"error": "No image available. Please upload an image first."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+
+class TextChattingView(APIView):
+    parser_classes = [JSONParser]  # only JSONParser needed for text input
+
+    def post(self, request):
+        session_key = request.session.session_key or request.META.get('HTTP_SESSION_ID')
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+        
+        qsn = request.data.get('question')
+        user_session, created = UserSession.objects.get_or_create(session_key=session_key)
+
+        if not user_session.image_data:
             return Response({"error": "No image available. Please upload an image first."},
                             status=status.HTTP_400_BAD_REQUEST)
-
+        
         # 질문에 응답
         response = get_response(user_session.image_data, qsn)
         return Response({"response": response}, status=status.HTTP_200_OK)
