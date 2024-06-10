@@ -25,7 +25,6 @@ Presto agitato: The third and final movement is very fast and furious, demanding
 characteristic
 The Moonlight Sonata is a work that clearly demonstrates Beethoven's creativity and sensitivity, and is greatly loved among classical music lovers. This work is considered an important example of expanding the form and expressive possibilities of the piano sonata."""
 
-
 def encode_image(upload_file):
     try:
         if upload_file.content_type.startswith('image/'):
@@ -64,8 +63,10 @@ class ChattingView(APIView):
             session_key = request.session.session_key
 
         user_session, created = UserSession.objects.get_or_create(session_key=session_key)
-        upload_image = request.FILES.get('image')
+        upload_image = request.FILES.get('file')
         qsn = request.data.get('question')
+        
+        print(request.FILES)
 
         if upload_image:
             # 처음 이미지를 업로드하는 경우 -> 기본 응답 반환
