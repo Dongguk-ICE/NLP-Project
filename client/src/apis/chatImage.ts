@@ -1,10 +1,10 @@
 import { instance } from "./axios";
 
-export const chatImage = async (image) => {
+export const chatImage = async (formData) => {
   const response = await instance.post(
     "/docent/chatting/",
     {
-      image: image,
+      image: formData,
     },
     {
       headers: {
