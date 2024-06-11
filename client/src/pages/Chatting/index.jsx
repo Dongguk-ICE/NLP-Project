@@ -1,8 +1,22 @@
 import * as S from "./styled.js";
 import logo from "../../assets/images/logo.svg";
 import toggleImg from "../../assets/images/toggle.svg";
+import { chatText } from "../../apis/chatPost.js";
+import { useState } from "react";
 
 export const Chatting = () => {
+  const [question, setQuestion] = useState("");
+  const handleChange = (e) => {
+    setQuestion(e.target.value);
+  };
+  const handleTextSumbit = async () => {
+    try {
+      const response = await chatText(question);
+      console.log("Text upload response:", response);
+    } catch (error) {
+      console.error("Error sending text:", error);
+    }
+  };
   return (
     <S.Layout>
       <S.HeaderLayout>
@@ -73,6 +87,7 @@ export const Chatting = () => {
               borderRadius: "10px",
               border: "0",
             }}
+            onChange={handleChange}
           />
           <button
             style={{
@@ -82,6 +97,7 @@ export const Chatting = () => {
               border: "0",
               cursor: "pointer",
             }}
+            onClick={handleTextSumbit}
           >
             전송
           </button>
