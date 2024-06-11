@@ -1,11 +1,9 @@
 from rest_framework import serializers
-from drf_base64.fields import Base64ImageField
-from .models import Chatting
+from .models import InputData
 
 
-class ChattingSerializer(serializers.ModelSerializer):
-    picture = Base64ImageField(use_url=True, required=False)
 
+class InputSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Chatting
-        fields = '__all__'
+        model = InputData
+        fields = ['file', 'question', 'created_at']
