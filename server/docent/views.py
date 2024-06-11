@@ -97,7 +97,8 @@ def get_response2(b64image, qsn):
             ])
         ]
     )
-    return msg.content
+    
+    return msg.content.split(". ", 1)[1]
 
 class InputDataView(APIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
