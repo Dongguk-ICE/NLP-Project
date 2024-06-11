@@ -31,7 +31,7 @@ export const Image = styled.img`
 
 export const ImageContainer = styled.div`
   cursor: pointer;
-  background-color: #f1e4c4;
+  background: ${(props) => (props.imgFlag ? "#ffffff" : "#f1e4c4")};
   display: flex;
   justify-content: center;
   align-items: center;
