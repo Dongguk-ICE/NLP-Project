@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import ChattingView, TextChattingView
+from .views import InputDataView, TextDataView
 
 urlpatterns = [
-    path('chatting/', ChattingView.as_view(), name='chatting'),
-    path('text-chatting/', TextChattingView.as_view(), name="text")
+    path('chatting/', InputDataView.as_view(), name='chatting'),
+    path('text-chatting/', TextDataView.as_view(), name='chatting'),
 ]
