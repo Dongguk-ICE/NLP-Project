@@ -2,15 +2,20 @@ import * as S from "./styled.js";
 import { useRef, useCallback, useState } from "react";
 import { chatImage } from "../../apis/chatPost.js";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { chatInfo } from "../../atoms/resChat.js";
+import { Loading } from "../Loading/index.jsx";
 import OnBoardingImg from "../../assets/images/onBoarding.png";
 import defaultImg from "../../assets/images/defaultImg.svg";
 
 export const OnBoarding = () => {
+  const setResChat = useSetRecoilState(chatInfo);
   const navigate = useNavigate();
   const inputRef = useRef();
   const [reqImg, setReqImg] = useState("");
   const [imgFlag, setImgFlag] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onUploadImage = useCallback((e) => {
     if (!e.target.files) {
@@ -30,23 +35,27 @@ export const OnBoarding = () => {
   }, []);
   const handleClick = () => {
     inputRef.current.click();
-    console.log(reqImg);
   };
   const handleSumbit = async () => {
     if (reqImg) {
       const formData = new FormData();
       formData.append("file", reqImg);
       try {
+        setIsLoading(true);
         const response = await chatImage(formData);
         navigate("/chatting");
-        console.log("Image upload response:", response);
+        setResChat([{ type: "response", text: response.response }]);
       } catch (error) {
         console.error("Error uploading image:", error);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       console.error("No image selected");
     }
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <S.Layout>
