@@ -1,9 +1,5 @@
 from django.db import models
-
-class UserSession(models.Model):
-    session_key = models.CharField(max_length=100, unique=True)
-    image_data = models.TextField(blank=True, null=True)  # Base64 인코딩된 이미지 데이터
-    last_interaction = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.session_key
+class InputData(models.Model):
+    file= models.ImageField(upload_to='uploads/', blank=True, null=True)
+    question = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # 자동으로 생성 시각 저장
