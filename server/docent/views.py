@@ -83,6 +83,7 @@ def get_response(b64image, qsn):
     )
     return msg.content
 
+
 def get_response2(b64image, qsn):
     if not b64image:
         return {"error": "Image encoding failed."}
@@ -139,6 +140,7 @@ class TextDataView(APIView):
                 return Response({"error": "No image available. Please upload an image first."}, status=status.HTTP_400_BAD_REQUEST)
         
             qsn = request.data.get('question')
+
             response = get_response2(base64_image, qsn)
             
             return Response({"response": response}, status=status.HTTP_200_OK)

@@ -7,6 +7,7 @@ import { chatInfo } from "../../atoms/resChat.js";
 import { Loading } from "../Loading/index.jsx";
 import OnBoardingImg from "../../assets/images/onBoarding.png";
 import defaultImg from "../../assets/images/defaultImg.svg";
+// import logo from "../../assets/images/logo.png";
 
 export const OnBoarding = () => {
   const setResChat = useSetRecoilState(chatInfo);
@@ -95,7 +96,7 @@ export const OnBoarding = () => {
             Music Docent
           </h1>
         </div>
-        <S.ImageContainer onClick={handleClick}>
+        <S.ImageContainer onClick={handleClick} imgFlag={imgFlag}>
           {imgFlag ? (
             <S.CustomImg src={imageSrc} alt="upload" />
           ) : (
