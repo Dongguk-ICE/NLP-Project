@@ -28,6 +28,10 @@ Presto agitato: The third and final movement is very fast and furious, demanding
 characteristic
 The Moonlight Sonata is a work that clearly demonstrates Beethoven's creativity and sensitivity, and is greatly loved among classical music lovers. This work is considered an important example of expanding the form and expressive possibilities of the piano sonata."""
 
+prompt2="""You are a professional with specialized knowledge in the field of music.
+Your role is to read the given sheet music and introduce the music to someone who has no background in music.
+You should return results in korean."""
+
 def encode_image(upload_file):
     if isinstance(upload_file, InMemoryUploadedFile):
         # 업로드된 이미지 파일 처리
@@ -79,6 +83,22 @@ def get_response(b64image, qsn):
     )
     return msg.content
 
+
+def get_response2(b64image, qsn):
+    if not b64image:
+        return {"error": "Image encoding failed."}
+
+    msg = chain.invoke(
+        [
+            AIMessage(content=prompt2),
+            HumanMessage(content=[
+                {"type": "text", "text": qsn},
+                {"type": "image_url", "image_url": {"url": "data:image/png;base64," + b64image, "detail": "auto"}}
+            ])
+        ]
+    )
+    return msg.content
+
 class InputDataView(APIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
@@ -119,7 +139,8 @@ class TextDataView(APIView):
                 return Response({"error": "No image available. Please upload an image first."}, status=status.HTTP_400_BAD_REQUEST)
         
             qsn = request.data.get('question')
-            response = get_response(base64_image, qsn)
+
+            response = get_response2(base64_image, qsn)
             
             return Response({"response": response}, status=status.HTTP_200_OK)
 
