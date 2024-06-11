@@ -7,6 +7,7 @@ export const chatImage = async (formData) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
@@ -16,9 +17,17 @@ export const chatImage = async (formData) => {
 };
 
 // 텍스트 전송 함수
-export const chatText = async (text) => {
+export const chatText = async (question) => {
   try {
-    const response = await instance.post("/docent/chatting/", { text });
+    const response = await instance.post(
+      "/docent/text-chatting/",
+      {
+        question: question,
+      },
+      {
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error sending text:", error);
